@@ -682,6 +682,160 @@ h1 em {
   color: var(--dim);
 }
 
+/* ---------- Auth ---------- */
+
+.auth-wrap {
+  width: min(460px, 100%);
+  margin: 0 auto;
+}
+
+.auth-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 30px 28px 26px;
+  box-shadow: 0 18px 40px -28px rgba(0, 0, 0, 0.8);
+}
+
+.auth-card h1 {
+  font-size: clamp(30px, 5vw, 40px);
+}
+
+.auth-form {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field-label {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+
+.field-label .optional {
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--later);
+}
+
+.field input {
+  background: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 11px 14px;
+  font: inherit;
+  font-size: 15px;
+  color: var(--paper);
+  transition: border-color 0.2s ease;
+}
+
+.field input::placeholder {
+  color: var(--dim);
+  opacity: 0.7;
+}
+
+.field input:focus {
+  outline: none;
+  border-color: var(--signal);
+}
+
+.auth-error {
+  margin: 0;
+  font-size: 13px;
+  color: var(--rose);
+  background: rgba(242, 140, 140, 0.08);
+  border: 1px solid rgba(242, 140, 140, 0.25);
+  border-radius: 9px;
+  padding: 9px 12px;
+}
+
+.auth-submit {
+  justify-content: center;
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 14px;
+  margin-top: 2px;
+}
+
+.auth-switch {
+  margin: 20px 0 0;
+  text-align: center;
+  font-size: 13px;
+  color: var(--dim);
+}
+
+.auth-switch button {
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  font-size: 13px;
+  color: var(--signal);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.auth-switch button:hover {
+  color: var(--paper);
+}
+
+/* ---------- User bar ---------- */
+
+.user-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: -6px 2px 16px;
+}
+
+.user-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--dim);
+}
+
+.sign-out {
+  flex: 0 0 auto;
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  padding: 6px 12px;
+  color: var(--dim);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+.sign-out:hover {
+  color: var(--rose);
+  border-color: var(--rose);
+  background: rgba(242, 140, 140, 0.08);
+}
+
 /* ---------- Footer ---------- */
 
 .foot {

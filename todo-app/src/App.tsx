@@ -1,9 +1,16 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
 import type { DayRecord, LoggedItem, PlannedItem } from './types'
+import AuthScreen from './AuthScreen'
+import { apiMe, getToken, setToken } from './api'
+import type { AuthUser } from './api'
 
-const STORAGE_KEY = 'epoch.days.v1'
+const STORAGE_PREFIX = 'epoch.days.v1'
 const HISTORY_WINDOW = 14
+
+function storageKey(userId: string): string {
+  return `${STORAGE_PREFIX}.${userId}`
+}
 
 /* ---------------- date helpers ---------------- */
 
@@ -55,9 +62,9 @@ function emptyDay(date: string): DayRecord {
   return { date, plan: [], did: [], note: '' }
 }
 
-function loadDays(): Record<string, DayRecord> {
+function loadDays(key: string): Record<string, DayRecord> {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY)
+    const raw = localStorage.getItem(key)
     if (!raw) return {}
     const parsed = JSON.parse(raw) as Record<string, DayRecord>
     return parsed && typeof parsed === 'object' ? parsed : {}
@@ -131,19 +138,54 @@ const TrashIcon = () => (
 /* ---------------- app ---------------- */
 
 export default function App() {
-  const [days, setDays] = useState<Record<string, DayRecord>>(loadDays)
+  const [user, setUser] = useState<AuthUser | null>(null)
+  const [authLoading, setAuthLoading] = useState(true)
+  const [days, setDays] = useState<Record<string, DayRecord>>({})
   const [dateKey, setDateKey] = useState<string>(todayKey())
   const [planText, setPlanText] = useState('')
   const [didText, setDidText] = useState('')
   const flashTimer = useRef<number | undefined>(undefined)
   const [flash, setFlash] = useState<string | null>(null)
 
-  const current = days[dateKey] ?? emptyDay(dateKey)
-  const isToday = dateKey === todayKey()
+  useEffect(() => {
+    const token = getToken()
+    if (!token) {
+      setAuthLoading(false)
+      return
+    }
+    apiMe()
+      .then(({ user }) => {
+        setUser(user)
+        setDays(loadDays(storageKey(user.id)))
+        setAuthLoading(false)
+      })
+      .catch(() => {
+        setToken(null)
+        setAuthLoading(false)
+      })
+  }, [])
+
+  function handleAuthed(next: AuthUser) {
+    setUser(next)
+    setDateKey(todayKey())
+    setDays(loadDays(storageKey(next.id)))
+    setAuthLoading(false)
+  }
+
+  function handleLogout() {
+    setToken(null)
+    setUser(null)
+    setDays({})
+  }
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(days))
-  }, [days])
+    if (user) {
+      localStorage.setItem(storageKey(user.id), JSON.stringify(days))
+    }
+  }, [days, user])
+
+  const current = days[dateKey] ?? emptyDay(dateKey)
+  const isToday = dateKey === todayKey()
 
   useEffect(() => () => window.clearTimeout(flashTimer.current), [])
 
@@ -247,6 +289,29 @@ export default function App() {
   const planLabel = isToday ? 'What I\u2019ll do today' : 'What I planned'
   const didLabel = isToday ? 'What I did' : 'What happened'
 
+  if (authLoading) {
+    return (
+      <div className="app">
+        <div className="auth-wrap">
+          <div className="auth-card">
+            <p className="kicker">
+              EPOCH <span aria-hidden="true">·</span> self-training log
+            </p>
+            <h1>Loading…</h1>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  if (!user) {
+    return (
+      <div className="app">
+        <AuthScreen onAuthed={handleAuthed} />
+      </div>
+    )
+  }
+
   return (
     <div className="app">
       <div className="shell">
@@ -270,6 +335,15 @@ export default function App() {
           </div>
           <Arc ratio={ratio} done={planDone} total={planTotal} />
         </header>
+
+        <div className="user-bar">
+          <span className="user-name" title={user.email}>
+            {user.name ? `${user.name} · ${user.email}` : user.email}
+          </span>
+          <button type="button" className="sign-out" onClick={handleLogout}>
+            sign out
+          </button>
+        </div>
 
         <div className="stat-strip">
           <span className="chip">{stats.daysLogged} days logged</span>
