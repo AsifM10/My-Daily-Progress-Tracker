@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
-import { sql, ensureSchema } from '../server/db'
-import { signToken, verifyPassword } from '../server/auth'
-import { onlyPost, readBody, send } from '../server/http'
+import { sql, ensureSchema } from '../server/db.js'
+import { signToken, verifyPassword } from '../server/auth.js'
+import { onlyPost, readBody, send } from '../server/http.js'
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (!onlyPost(req, res)) return

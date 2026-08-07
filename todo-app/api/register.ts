@@ -1,8 +1,8 @@
 import { randomUUID } from 'crypto'
 import type { VercelRequest, VercelResponse } from '@vercel/node'
-import { sql, ensureSchema } from '../server/db'
-import { hashPassword, signToken } from '../server/auth'
-import { onlyPost, readBody, send } from '../server/http'
+import { sql, ensureSchema } from '../server/db.js'
+import { hashPassword, signToken } from '../server/auth.js'
+import { onlyPost, readBody, send } from '../server/http.js'
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 

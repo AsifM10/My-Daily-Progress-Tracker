@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
-import { sql, ensureSchema } from '../server/db'
-import { verifyToken } from '../server/auth'
-import { bearerToken, send } from '../server/http'
+import { sql, ensureSchema } from '../server/db.js'
+import { verifyToken } from '../server/auth.js'
+import { bearerToken, send } from '../server/http.js'
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   const token = bearerToken(req)

@@ -52,3 +52,36 @@ export function apiLogin(email: string, password: string): Promise<AuthResponse>
 export function apiMe(): Promise<{ user: AuthUser }> {
   return request('/api/me')
 }
+
+export interface DayPayload {
+  date: string
+  plan: unknown[]
+  did: unknown[]
+  note: string
+}
+
+export function apiGetDays(): Promise<{ days: Record<string, DayPayload> }> {
+  return request('/api/days')
+}
+
+export function apiPutDay(day: DayPayload): Promise<{ ok: boolean }> {
+  return request('/api/days', {
+    method: 'PUT',
+    body: JSON.stringify(day),
+  })
+}
+
+export function apiDeleteDays(): Promise<{ ok: boolean }> {
+  return request('/api/days', { method: 'DELETE' })
+}
+
+export function apiUpdateProfile(input: {
+  name?: string
+  currentPassword?: string
+  newPassword?: string
+}): Promise<{ user: AuthUser }> {
+  return request('/api/profile', {
+    method: 'PATCH',
+    body: JSON.stringify(input),
+  })
+}

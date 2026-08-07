@@ -12,6 +12,17 @@ export async function ensureSchema() {
       created_at TIMESTAMPTZ NOT NULL DEFAULT now()
     )
   `
+  await sql`
+    CREATE TABLE IF NOT EXISTS day_records (
+      user_id TEXT NOT NULL,
+      date TEXT NOT NULL,
+      plan JSONB NOT NULL DEFAULT '[]'::jsonb,
+      did JSONB NOT NULL DEFAULT '[]'::jsonb,
+      note TEXT NOT NULL DEFAULT '',
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+      PRIMARY KEY (user_id, date)
+    )
+  `
 }
 
 export interface UserRow {
